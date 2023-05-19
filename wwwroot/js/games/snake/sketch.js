@@ -1,10 +1,12 @@
-let snake;
+import { Snake } from "snakeclass.js";
 let rez;
 
 function setup() {
   createCanvas(400, 400);
+  frameRate(5);
   snake = new Snake();
 }
+  
 
 function keyPressed() {
   if(keyCode === LEFT_ARROW) {
@@ -20,7 +22,7 @@ function keyPressed() {
 }
 
 function draw() {
-  scale(rez)
+  scale(rez);
   background(220);
   snake.update();
   snake.show();
