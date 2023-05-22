@@ -12,10 +12,10 @@ class Grid {
     constructor(_canvasSize, _unitSize) {
         this.gridSqaures = [];
         this.gridRows = floor(canvasSize / unitSize);
-        this.setupGrid(_canvasSize, _unitSize);
+        this.setupGrid(_unitSize);
     }
 
-    setupGrid(canvasSize, unitSize) {
+    setupGrid(unitSize) {
 
         for (let x = 0; x < this.gridRows; x++) {
             this.gridSqaures[x] = [];

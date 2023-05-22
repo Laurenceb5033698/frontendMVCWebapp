@@ -1,25 +1,24 @@
-import { Snake } from "snakeclass.js";
-import { Grid } from "grid.js";
-import { Fruit } from "fruit.js";
-
-
-let rez;
-
+//import { Snake } from "snakeclass.js";
+//import { Grid } from "grid.js";
+//import { Fruit } from "fruit.js";
 
 let canvasSize = 400;
 let unitSize = 20;
 let gameActive = true;
-var numberOfCollectedFruit = 0;
+let numberOfCollectedFruit = 0;
 
 function setup() {
-  createCanvas(canvasSize, canvasSize);
+  let gameCanvas = createCanvas(canvasSize, canvasSize);
+  gameCanvas.id("snakeCanvas");
+  
+  addLeaderboardEntryForm();
   frameRate(5);
+  grid = new Grid(canvasSize, unitSize);
   resetGame();
 }
 
 function resetGame() {
   snake = new Snake(unitSize);
-  grid = new Grid(canvasSize, unitSize);
   fruit = new Fruit(unitSize);
   fruit.randomize(canvasSize);
   numberOfCollectedFruit = 0;
@@ -43,9 +42,9 @@ function keyPressed() {
 }
 
 function draw() {
-  //scale(rez);
-
   if (gameActive) {
+    toggleForm(false);
+    
     background(220);
     //logic
     collectFruit();
@@ -108,20 +107,74 @@ function randomizeFruit() {
 function drawGameover() {
   fill(100, 30, 30);
   //rounded rect
-  rect(canvasSize / 4, canvasSize / 4, canvasSize / 2, canvasSize / 3, 10, 10, 10, 10);
+  rect(canvasSize / 4, canvasSize / 4, canvasSize / 2, canvasSize / 2, 10, 10, 10, 10);
   fill(0);
   textAlign(CENTER);
-  
+
   let textover = "Game Over";
   textSize(30);
   text(textover, (canvasSize / 2), canvasSize / 3);
 
-  let textScore = "Score: " + numberOfCollectedFruit*10;
+  let textScore = "Score: " + numberOfCollectedFruit * 10;
   textSize(20);
-  text(textScore, (canvasSize / 2) , canvasSize / 2.5);
+  text(textScore, (canvasSize / 2), canvasSize / 2.5);
 
   let textRetry = "Hit 'Enter' key to retry";
   textSize(20);
-  text(textRetry, (canvasSize / 2), canvasSize / 2);
+  text(textRetry, (canvasSize / 2), canvasSize / 2 + canvasSize/5);
 
+  //show form div
+  toggleForm(true);
+}
+
+//create form for inputing name
+function addLeaderboardEntryForm() {
+  
+  //get canvas dom element
+  let myCanvas = document.getElementById("snakeCanvas");
+  let canvRect = myCanvas.getBoundingClientRect();
+  
+  let formDiv = createDiv();
+  formDiv.id("ScoreForm");
+  
+  let formElement = createInput('');
+  formElement.id("formInputElement");
+  formElement.position(canvRect.left + canvasSize/4 +10, canvRect.top + canvasSize/2);
+  formElement.parent(formDiv);
+  formElement.size(canvasSize/4);
+  
+  let button = createButton('submit');
+  button.position(formElement.x + formElement.width + 20, formElement.y);
+  button.mousePressed(greet);
+  button.parent(formDiv);
+
+  let greeting = createElement('h2', 'Submit your Score!');
+  greeting.position(formElement.x, formElement.y - 40);
+  greeting.parent(formDiv);
+  greeting.id("formLabel");
+  
+  formDiv.style('display','none');
+  
+  textAlign(CENTER);
+  textSize(20);
+}
+
+//callback on submit
+function greet() {
+  let formElement = select('#formInputElement');
+  const name = formElement.value();
+  let greeting = select('#formLabel');  
+  greeting.html(name + '! '+ numberOfCollectedFruit*10);
+  formElement.value('');
+
+  alert("you pushed the submit button! " + name);
+}
+
+function toggleForm(show){
+  let ScoreForm = document.getElementById("ScoreForm");
+  if (show) {
+    ScoreForm.style.display = 'block';
+  } else {
+    ScoreForm.style.display = 'none';
+  }
 }
