@@ -10,6 +10,7 @@ let numberOfCollectedFruit = 0;
 function setup() {
   let gameCanvas = createCanvas(canvasSize, canvasSize);
   gameCanvas.id("snakeCanvas");
+  gameCanvas.parent(document.getElementById('canvas-holder'));
   
   addLeaderboardEntryForm();
   frameRate(5);
@@ -136,6 +137,7 @@ function addLeaderboardEntryForm() {
   
   let formDiv = createDiv();
   formDiv.id("ScoreForm");
+  formDiv.parent('#canvas-holder');
   
   let formElement = createInput('');
   formElement.id("formInputElement");
