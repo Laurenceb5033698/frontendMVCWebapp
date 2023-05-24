@@ -11,7 +11,7 @@ function setup() {
   let gameCanvas = createCanvas(canvasSize, canvasSize);
   gameCanvas.id("snakeCanvas");
   gameCanvas.parent(document.getElementById('canvas-holder'));
-  
+
   addLeaderboardEntryForm();
   frameRate(5);
   grid = new Grid(canvasSize, unitSize);
@@ -45,7 +45,7 @@ function keyPressed() {
 function draw() {
   if (gameActive) {
     toggleForm(false);
-    
+
     background(220);
     //logic
     collectFruit();
@@ -116,13 +116,16 @@ function drawGameover() {
   textSize(30);
   text(textover, (canvasSize / 2), canvasSize / 3);
 
-  let textScore = "Score: " + numberOfCollectedFruit * 10;
   textSize(20);
+  
+  let textScore = "Score: " + numberOfCollectedFruit * 10;
   text(textScore, (canvasSize / 2), canvasSize / 2.5);
 
+  let textSubmitPrompt = "Submit your score!";
+  text(textSubmitPrompt, (canvasSize / 2), (canvasSize / 2));
+
   let textRetry = "Hit 'Enter' key to retry";
-  textSize(20);
-  text(textRetry, (canvasSize / 2), canvasSize / 2 + canvasSize/5);
+  text(textRetry, (canvasSize / 2), canvasSize / 2 + canvasSize / 5);
 
   //show form div
   toggleForm(true);
@@ -130,33 +133,31 @@ function drawGameover() {
 
 //create form for inputing name
 function addLeaderboardEntryForm() {
-  
+
   //get canvas dom element
   let myCanvas = document.getElementById("snakeCanvas");
   let canvRect = myCanvas.getBoundingClientRect();
-  
-  let formDiv = createDiv();
-  formDiv.id("ScoreForm");
-  formDiv.parent('#canvas-holder');
-  
+
+  //select first dom element with CLASS 'ScoreForm'
+  let formDiv = select('.ScoreForm');
+  if (!formDiv) {
+    console.log("formDiv null! check div with class .ScoreForm exists in html.");
+    return;
+  }
+  formDiv.position(0, 0, 'relative');
+
   let formElement = createInput('');
   formElement.id("formInputElement");
-  formElement.position(canvRect.left + canvasSize/4 +10, canvRect.top + canvasSize/2);
-  formElement.parent(formDiv);
-  formElement.size(canvasSize/4);
-  
+  formElement.position(canvasSize / 4 + 10, canvasSize / 2);
+  formElement.size(canvasSize / 4);
+
   let button = createButton('submit');
   button.position(formElement.x + formElement.width + 20, formElement.y);
   button.mousePressed(greet);
-  button.parent(formDiv);
+  
+  formDiv.child(formElement);
+  formDiv.child(button);
 
-  let greeting = createElement('h2', 'Submit your Score!');
-  greeting.position(formElement.x, formElement.y - 40);
-  greeting.parent(formDiv);
-  greeting.id("formLabel");
-  
-  formDiv.style('display','none');
-  
   textAlign(CENTER);
   textSize(20);
 }
@@ -165,18 +166,16 @@ function addLeaderboardEntryForm() {
 function greet() {
   let formElement = select('#formInputElement');
   const name = formElement.value();
-  let greeting = select('#formLabel');  
-  greeting.html(name + '! '+ numberOfCollectedFruit*10);
   formElement.value('');
 
-  alert("you pushed the submit button! " + name);
+  alert("Score submitted! " + name);
 }
 
-function toggleForm(show){
-  let ScoreForm = document.getElementById("ScoreForm");
+function toggleForm(show) {
+  let ScoreForm = select(".ScoreForm");
   if (show) {
-    ScoreForm.style.display = 'block';
+    ScoreForm.style('display', 'block');
   } else {
-    ScoreForm.style.display = 'none';
+    ScoreForm.style('display', 'none');
   }
 }
