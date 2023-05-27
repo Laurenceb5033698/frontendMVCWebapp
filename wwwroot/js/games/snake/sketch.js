@@ -1,6 +1,7 @@
 //import { Snake } from "snakeclass.js";
 //import { Grid } from "grid.js";
 //import { Fruit } from "fruit.js";
+//import {postScoreToLeaderboard} from "../../PostScores.js";
 
 let canvasSize = 400;
 let unitSize = 20;
@@ -12,9 +13,12 @@ function setup() {
   gameCanvas.id("snakeCanvas");
   gameCanvas.parent(document.getElementById('canvas-holder'));
 
-  addLeaderboardEntryForm();
+  //addLeaderboardEntryForm();
   frameRate(5);
   grid = new Grid(canvasSize, unitSize);
+  LeaderboardForm = new GameOverForm(canvasSize, calculateScore);
+  LeaderboardForm.addLeaderboardEntryForm(calculateScore);
+  LeaderboardForm.updateGameActive(gameActive);
   resetGame();
 }
 
@@ -36,6 +40,7 @@ function keyPressed() {
       if (!gameActive) {
         resetGame();
         gameActive = true;
+        LeaderboardForm.updateGameActive(gameActive);
       }
       break;
   }
@@ -44,7 +49,7 @@ function keyPressed() {
 
 function draw() {
   if (gameActive) {
-    toggleForm(false);
+    //LeaderboardForm.toggleForm(false);
 
     background(220);
     //logic
@@ -58,7 +63,7 @@ function draw() {
     fruit.draw();
   }
   else {
-    drawGameover();
+    LeaderboardForm.draw();
   }
 }
 
@@ -79,6 +84,7 @@ function gameRules() {
   gameover |= outofBounds(nextHeadPos);
   if (gameover) {
     gameActive = false;
+    LeaderboardForm.updateGameActive(gameActive);
   }
 }
 
@@ -105,6 +111,11 @@ function randomizeFruit() {
   isOccupied = false;
 }
 
+function calculateScore() {
+  return numberOfCollectedFruit * 10;
+}
+
+
 function drawGameover() {
   fill(100, 30, 30);
   //rounded rect
@@ -128,7 +139,7 @@ function drawGameover() {
   text(textRetry, (canvasSize / 2), canvasSize / 2 + canvasSize / 5);
 
   //show form div
-  toggleForm(true);
+  //LeaderboardForm.toggleForm(true);
 }
 
 //create form for inputing name
@@ -139,12 +150,12 @@ function addLeaderboardEntryForm() {
   let canvRect = myCanvas.getBoundingClientRect();
 
   //select first dom element with CLASS 'ScoreForm'
-  let formDiv = select('.ScoreForm');
-  if (!formDiv) {
-    console.log("formDiv null! check div with class .ScoreForm exists in html.");
+  let ScoreForm = select('.ScoreForm');
+  if (!ScoreForm) {
+    console.log("ScoreForm null! check div with class .ScoreForm exists in html.");
     return;
   }
-  formDiv.position(0, 0, 'relative');
+  ScoreForm.position(0, 0, 'relative');
 
   let formElement = createInput('');
   formElement.id("formInputElement");
@@ -153,23 +164,28 @@ function addLeaderboardEntryForm() {
 
   let button = createButton('submit');
   button.position(formElement.x + formElement.width + 20, formElement.y);
-  button.mousePressed(greet);
+  button.mousePressed(submittedCallback);
   
-  formDiv.child(formElement);
-  formDiv.child(button);
+  ScoreForm.child(formElement);
+  ScoreForm.child(button);
 
   textAlign(CENTER);
   textSize(20);
 }
 
 //callback on submit
-function greet() {
+function submittedCallback() {
   let formElement = select('#formInputElement');
-  const name = formElement.value();
+  const userName = formElement.value().toString();
+  const userScore = numberOfCollectedFruit*10;
+  
+  //reset to prevent multi-submissions
   formElement.value('');
-
-  alert("Score submitted! " + name);
+  numberOfCollectedFruit =0;
+  
+  postScoreToLeaderboard("Scoreboard", userName, userScore);
 }
+
 
 function toggleForm(show) {
   let ScoreForm = select(".ScoreForm");
