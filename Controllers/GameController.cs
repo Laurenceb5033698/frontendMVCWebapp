@@ -5,7 +5,7 @@ namespace mvcIntro.Controllers;
 
 public class GameController : Controller
 {    
-    public IActionResult Game()
+    public IActionResult Snake()
     {
         return View();
     }
