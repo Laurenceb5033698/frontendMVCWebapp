@@ -9,4 +9,9 @@ public class GameController : Controller
     {
         return View();
     }
+    
+    public IActionResult Bullseye()
+    {
+        return View();
+    }
 }

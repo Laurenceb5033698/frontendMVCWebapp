@@ -1,0 +1,58 @@
+@{
+    ViewBag.Title = "Generic Game Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Libs{
+    @RenderSection("Libs")
+}
+
+@section Scripts{
+    @RenderSection("Scripts")
+}
+
+<div class="row">
+        <div class="col-lg-3 col-xs-12">
+            <div class="page page-secondary">
+                @RenderSection("Instructions", required: true)
+            </div>
+        </div>
+        <div class="col-lg-6 col-xs-12">
+            <div class="page page-primary">
+                <div id="canvas-holder">
+                    <div class="ScoreForm"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-12">
+            <div class="page page-secondary">
+                <!-- leaderboard card-->
+                <div id="scoreboard">
+                    <table class="table table-sm table-striped">
+                        <thead class="thead-light">
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody id="scoreTable">
+                            <tr>
+                                <td>1</td>
+                                <td>default 1</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>default 2</td>
+                                <td>20</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td> defualt 3</td>
+                                <td>1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
